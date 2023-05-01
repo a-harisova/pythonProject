@@ -38,9 +38,9 @@
 
             <section class="teacher=info">
 
-              <h1 class="h2">Morris Simmmons</h1>
-              <p><span class="badge badge-secondary mr-2">Для путешествий </span>Рейтинг: 4.8 Ставка: 1200 / час</p>
-              <p>Native English language teacherHi Everyone! My name is Richard; I am a native English speaker. I was born in South Africa, Spent 12 years living in the UK and am now living in Spain. I have a degree in food science, a TEFL certificate and a level 3 in training and education. I worked in cheese manufacturing for many years and have good knowledge of dairy production and food safety topics.</p>
+              <h1 class="h2">{{ all_data[1][teacher_id]['name'] }}</h1>
+              <p><span class="badge badge-secondary mr-2"> {{ all_data[0][all_data[1][teacher_id]['goals']] }}Для путешествий </span>Рейтинг: {{ all_data[1][teacher_id]['rating'] }} Ставка: {{ all_data[1][teacher_id]['price'] }} / час</p>
+              <p>{{ all_data[1][teacher_id]['about'] }}</p>
 
             </section>
 

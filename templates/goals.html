@@ -29,23 +29,14 @@
       </span>
     </nav>
   </header>
-  <main class="container mt-3 mb-5">
-    <section>
-    <h1 class="h1 text-center mx-auto mt-4 py-5"><strong>Найдите идеального <br>репетитора английского, <br>занимайтесь онлайн</strong></h1>
-    <div class="text-center mb-5">
-      <div class="btn-group mx-auto mb-0" role="group" aria-label="Basic example">
+  <main class="container mt-3">
 
-        {% for key in all_data[0] %}
-        <a href="{{ url_for('render_goals', goal=key) }}" class="btn btn-outline-secondary">{{ all_data[0][key] }}</a>
-        {% endfor %}
+    <h1 class="h1 text-center w-50 mx-auto mt-1 py-5 mb-4"><strong>{{ all_data[0][goal]|first }}<br />Преподаватели <br>{{ all_data[0][goal]|replace(all_data[0][goal]|first, "")|lower }}</strong></h1>
 
-      </div>
-    </div>
-    <h2 class="h5 text-center mb-5">Наши преподаватели</h2>
-    <div class="row">
+      <div class="row">
       <div class="col-12 col-lg-10 offset-lg-1 m-auto">
 
-        {% for teacher in all_data[1] %}
+        {% for teacher in all_data[1] if goal in teacher['goals'] %}
         <div class="card mb-4">
           <div class="card-body">
             <div class="row">
@@ -54,24 +45,23 @@
                 <p class="float-right">Рейтинг: {{ teacher['rating'] }} Ставка: {{ teacher['price'] }} / час</p>
                 <h2 class="h4">{{ teacher['name'] }}</h2>
                 <p>{{ teacher['about'] }}</p>
-                <a href="profile.html" class="btn btn-outline-primary btn-sm mr-3 mb-2">Показать информаци и расписание</a>
+                <a href="{{ url_for('render_profiles', teacher_id=teacher['id']) }}" class="btn btn-outline-primary btn-sm mr-3 mb-2">Показать информаци и расписание</a>
               </div>
             </div>
           </div>
         </div>
-         {% endfor %}
+        {% endfor %}
+
       </div>
     </div>
-
 
     <h2 class="text-center mt-5 mb-3">Не нашли своего репетитора?</h2>
     <p class="text-center mb-4">Расскажите, кто вам нужен и мы подберем его сами</p>
     <div class="text-center pb-5">
-        <a href="" class="btn btn-primary">Заказать подбор</a>
+        <a href="request.html" class="btn btn-primary">Заказать подбор</a>
     </div>
 
 
-    </section>
   </main>
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
