@@ -50,21 +50,26 @@
 
               {% for day in all_data[1][teacher_id]['free'] %}
 
-              {% if day == 'mon'%}<h6 class="mt-4">Понедельник</h6>{% endif %}
-              {% if day == 'tue'%}<h6 class="mt-4">Вторник</h6>{% endif %}
-              {% if day == 'wed'%}<h6 class="mt-4">Среда</h6>{% endif %}
-              {% if day == 'thu'%}<h6 class="mt-4">Четверг</h6>{% endif %}
-              {% if day == 'fri'%}<h6 class="mt-4">Пятница</h6>{% endif %}
-              {% if day == 'sat'%}<h6 class="mt-4">Суббота</h6>{% endif %}
-              {% if day == 'sun'%}<h6 class="mt-4">Воскресенье</h6>{% endif %}
+              {% if day == 'mon'%}<p class="my-1">Понедельник, {{ time }}</p>
+            {% elif day == 'tue'%}<p class="my-1">Вторник, {{ time }}</p>
+            {% elif day == 'wed'%}<p class="my-1">Среда, {{ time }}</p>
+            {% elif day == 'thu'%}<p class="my-1">Четверг, {{ time }}</p>
+            {% elif day == 'fri'%}<p class="my-1">Пятница, {{ time }}</p>
+            {% elif day == 'sat'%}<p class="my-1">Суббота, {{ time }}</p>
+            {% elif day == 'sun'%}<p class="my-1">Воскресенье, {{ time }}</p>
+            {% endif %}
 
+              {% set ns = namespace (all_false = true) %}
               {% for key in all_data[1][teacher_id]['free'][day] %}
 
                   {% if all_data[1][teacher_id]['free'][day][key] %}
-                      <a href="#" class="btn btn-outline-success  mr-2">{{ key }} свободно</a>
+<a href="{{ url_for('render_booking', teacher_id=teacher_id|int, day=day, time=key)  }}" class="btn btn-outline-success  mr-2">{{ key }} свободно</a>                      {% set ns.all_false = false %}
                   {% endif %}
 
               {% endfor %}
+              {% if ns.all_false %}
+                  <p>Нет свободных мест</p>
+              {% endif %}
               {% endfor %}
 
             </section>
