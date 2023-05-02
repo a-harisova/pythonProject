@@ -15,9 +15,10 @@ for key in all_data[1]:
 @app.route('/') # главная
 def render_main():
     return render_template("index.html", all_data=all_data)
-@app.route('/teachers/')
+
+@app.route('/teachers/') # все репетиторы
 def render_teachers():
-    return "здесь будут преподаватели"
+    return render_template("teachers.html", all_data=all_data)
 
 @app.route('/goals/<goal>/') # здесь будет цель <goal>
 def render_goals(goal):
@@ -25,7 +26,7 @@ def render_goals(goal):
 
 @app.route('/profiles/<int:teacher_id>/') #  здесь будет преподаватель <id учителя>
 def render_profiles(teacher_id):
-    return render_template("profiles.html", teacher_id=teacher_id, all_data=all_data)
+    return render_template("profile.html", teacher_id=teacher_id, all_data=all_data)
 
 @app.route('/request/') # здесь будет заявка на подбор
 def render_request():
