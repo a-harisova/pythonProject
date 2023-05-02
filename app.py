@@ -1,7 +1,7 @@
 import json
 from flask import Flask, render_template, request
 from flask_wtf import FlaskForm
-from wtforms import RadioField, TextAreaField
+from wtforms import RadioField, StringField
 
 app = Flask(__name__)
 app.secret_key = 'key'
@@ -21,12 +21,11 @@ def add_request(name, phone, goal, times):
     w.close()
 
 # Запись нового брони в файл data.json
-def update_timetable_teacher(id_teacher, day, times):
+def update_timetable_teacher(id_teacher, day, times, client_name, client_phone):
     with open('data.json', 'r') as r:
         records = json.load(r)
         records[1][int(id_teacher)]['free'][day][times] = False
         r.close()
-
     with open('data.json', 'w') as w:
         json.dump(records, w)
         w.close()
@@ -34,17 +33,17 @@ def update_timetable_teacher(id_teacher, day, times):
         global all_data
         all_data = json.load(r)
         r.close()
-
-def update_data():
-    with open('data.json', 'r') as r:
-        global all_data
-        all_data = json.load(r)
+    with open('booking.json', 'r') as r:
+        records = json.load(r)
+        records.append([id_teacher, day, times, client_name, client_phone])
         r.close()
+    with open('booking.json', 'w') as w:
+        json.dump(records, w)
+        w.close()
 
-update_data()
 class RequestForm(FlaskForm):   # объявление класса формы для WTForms
-    name = TextAreaField('name')
-    phone = TextAreaField('phone')
+    name = StringField('name')
+    phone = StringField('phone')
     goal = RadioField("Какая цель занятий?", choices=[('0', 'Для путешествий'),
                                                       ('1', 'Для школы'),
                                                       ('2', 'Для работы'),
@@ -53,7 +52,7 @@ class RequestForm(FlaskForm):   # объявление класса формы �
                       choices=[('0', '1-2 часа в неделю'),
                                ('1', '3-5 часов в неделю'),
                                ('2', '5-7 часов в неделю'),
-                               ('3', '7-10 часов в неделю')])
+                               ('3', '7-9 часов в неделю')])
 
 @app.route('/') # главная
 def render_main():
@@ -73,8 +72,8 @@ def render_profiles(teacher_id):
 
 @app.route('/request/') # здесь будет заявка на подбор
 def render_request():
-    ReqForm = RequestForm()  # Форма для страницы ('/request')
-    return render_template("request.html", form=ReqForm, all_data=all_data)
+    form_request = RequestForm()  # Форма для страницы ('/request')
+    return render_template("request.html", form=form_request, all_data=all_data)
 
 @app.route('/request_done/', methods=['POST'])  # заявка на подбор отправлена
 def render_request_done():
@@ -103,16 +102,17 @@ def render_booking(teacher_id, day, time):
 
 @app.route('/booking_done/', methods=['POST']) # заявка отправлена
 def render_booking_done():
-    clientWeekday = request.form["clientWeekday"]
-    clientTime = request.form["clientTime"]
-    clientTeacher = request.form["clientTeacher"]
-    clientName = request.form["clientName"]
-    clientPhone = request.form["clientPhone"]
+    client_weekday = request.form["clientWeekday"]
+    client_time = request.form["clientTime"]
+    client_teacher = request.form["clientTeacher"]
+    client_name = request.form["clientName"]
+    client_phone = request.form["clientPhone"]
 
-    update_timetable_teacher(clientTeacher, clientWeekday, clientTime)  # Обновляем расписание свободного времени репетитора
-    update_data()
-    return render_template("booking_done.html", clientName=clientName, clientPhone=clientPhone, clientTime=clientTime,
-                           clientTeacher=clientTeacher, clientWeekday=clientWeekday)
+    # Обновляем расписание свободного времени репетитора
+    update_timetable_teacher(client_teacher, client_weekday, client_time, client_name, client_phone)
+
+    return render_template("booking_done.html", clientName=client_name, clientPhone=client_phone, clientTime=client_time,
+                           clientTeacher=client_teacher, clientWeekday=client_weekday)
 if __name__ == "__main__":
     app.run(debug=True)
 
